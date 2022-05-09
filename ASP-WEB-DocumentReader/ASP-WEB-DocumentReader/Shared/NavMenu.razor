@@ -1,0 +1,31 @@
+﻿@inject ILoginService LoginService
+
+
+<MudDrawer @bind-Open="SideBarOpen" Elevation="1">
+	<MudDrawerHeader>
+		@*<MudAvatar Color="Color.Primary" Size="Size.Medium" Image="assets/logo.png" />*@
+		<MudText Typo="Typo.h5" Color="Color.Default" Style="margin-top:10px; margin-left:15px;">@LoginService.User.nomeUsuario</MudText>
+	</MudDrawerHeader>
+	<MudNavMenu>
+		<MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">Home</MudNavLink>
+		<MudNavLink Href="/fetchdata" Icon="@Icons.Filled.Storage">FetchData</MudNavLink>
+		<MudNavGroup Title="Expanding" Icon="@Icons.Filled.DashboardCustomize" Expanded="false">
+			<MudNavLink Href="#" Icon="@Icons.Filled.Camera">Photos</MudNavLink>
+			<MudNavLink Href="#" Icon="@Icons.Filled.Celebration">Party</MudNavLink>
+		</MudNavGroup>
+	</MudNavMenu>
+	<MudDivider />
+	<MudNavMenu>
+		<MudNavGroup Title="Conta" Icon="@Icons.Filled.AccountTree" Expanded="true">
+			<MudNavLink Href="/Logout" Icon="@Icons.Filled.Logout">LogOut</MudNavLink>
+		</MudNavGroup>
+	</MudNavMenu>
+</MudDrawer>
+
+@code {
+	[Parameter]
+	public bool SideBarOpen { get; set; }
+
+
+
+}

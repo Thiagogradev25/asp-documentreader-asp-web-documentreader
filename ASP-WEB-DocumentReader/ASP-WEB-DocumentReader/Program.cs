@@ -4,6 +4,7 @@ using ASP_WEB_DocumentReader.Infra.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
 using System;
 using System.Net.Http;
 
@@ -14,6 +15,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped<ILoginService, LoginService>()
                 .AddScoped<IAlertService, AlertService>()
                 .AddScoped<ILocalStorageService, LocalStorageService>();
+
+builder.Services.AddMudServices();
 
 builder.Services.AddScoped(x => {
     var apiUrl = new Uri(builder.Configuration["apiUrl"]);

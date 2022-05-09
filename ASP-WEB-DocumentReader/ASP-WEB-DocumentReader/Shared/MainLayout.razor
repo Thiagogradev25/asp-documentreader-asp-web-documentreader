@@ -1,28 +1,42 @@
-﻿@inherits LayoutComponentBase
+﻿@using MudBlazor
+@inherits LayoutComponentBase
 @inject ILoginService LoginService
 @inject NavigationManager NavigationManager
 
 @if (LoggedIn)
 {
-    <!-- nav -->
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
-        <div class="navbar-nav">
-            <NavLink href="/home" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
-            <NavLink href="/Logout" class="nav-item nav-link">Logout</NavLink>
-        </div>
-    </nav>
+	<MudLayout>
+		<AppBar OnSidebarToggled="ToggleSidebar" OnThemeToggled="ToggleTheme" />
+
+		<NavMenu SideBarOpen="_sidebarOpen" />
+
+		<MudMainContent Class="pt-16 px-16">
+			<MudContainer Class="mt-6">
+				@Body
+			</MudContainer>
+		</MudMainContent>
+	</MudLayout>
+
+	<MudThemeProvider Theme="_currentTheme" />
+}else{
+	<div class="app-container @(LoggedIn ? "bg-light" : "")">
+		<AlertView  />
+		@Body
+	</div>
 }
 
-<div class="app-container @(LoggedIn ? "bg-light" : "")">
-    <AlertView  />
-    @Body
-</div>
 
 @code {
     public bool LoggedIn 
     {
         get { return LoginService.User != null; }
     }
+	private MudTheme _currentTheme = new MudTheme();
+	private bool _sidebarOpen = false;
 
+
+	private void ToggleTheme(MudTheme changedTheme) => _currentTheme = changedTheme;
+
+	private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
 }
 
