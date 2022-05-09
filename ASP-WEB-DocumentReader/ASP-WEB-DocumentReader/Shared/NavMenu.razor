@@ -1,31 +1,65 @@
-﻿@inject ILoginService LoginService
-
+﻿@using ASP_API_DocumentReader.Domain.Models
+@inject ILoginService LoginService
+@inject IMenuService MenuService
 
 <MudDrawer @bind-Open="SideBarOpen" Elevation="1">
 	<MudDrawerHeader>
 		@*<MudAvatar Color="Color.Primary" Size="Size.Medium" Image="assets/logo.png" />*@
 		<MudText Typo="Typo.h5" Color="Color.Default" Style="margin-top:10px; margin-left:15px;">@LoginService.User.nomeUsuario</MudText>
 	</MudDrawerHeader>
-	<MudNavMenu>
-		<MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Filled.Home">Home</MudNavLink>
-		<MudNavLink Href="/fetchdata" Icon="@Icons.Filled.Storage">FetchData</MudNavLink>
-		<MudNavGroup Title="Expanding" Icon="@Icons.Filled.DashboardCustomize" Expanded="false">
-			<MudNavLink Href="#" Icon="@Icons.Filled.Camera">Photos</MudNavLink>
-			<MudNavLink Href="#" Icon="@Icons.Filled.Celebration">Party</MudNavLink>
-		</MudNavGroup>
-	</MudNavMenu>
+	@if(Menus.Count != 0)
+	{
+		<MudNavMenu>
+		@foreach (var item in Menus.GroupBy(x => x.DescMenu))
+            {
+                <MudNavGroup Title="@item.First().DescMenu" Icon="@GetIcons(item.First().IconeMenu)" Expanded="false">
+                    @foreach (var subitem in item.Where(x => x.MenuId == item.First().MenuId))
+                    {
+                        <MudNavLink Href="@subitem.Titulo" Icon=@GetIcons(subitem.Icone)>@subitem.Titulo</MudNavLink>
+                    }
+				</MudNavGroup>
+            }
+		
+		</MudNavMenu>
+	}
+	<br />
+	<br />
 	<MudDivider />
-	<MudNavMenu>
-		<MudNavGroup Title="Conta" Icon="@Icons.Filled.AccountTree" Expanded="true">
-			<MudNavLink Href="/Logout" Icon="@Icons.Filled.Logout">LogOut</MudNavLink>
-		</MudNavGroup>
-	</MudNavMenu>
+	<MudNavLink Href="/Logout" Icon="@Icons.Filled.Logout">LogOut</MudNavLink>
 </MudDrawer>
 
 @code {
 	[Parameter]
 	public bool SideBarOpen { get; set; }
 
+	List<MenuItem> Menus = new List<MenuItem>();
 
+	protected override async Task OnInitializedAsync()
+	{
+		var retorno = await MenuService.GetMenu();
+		Menus = retorno.ToList();
+	}
 
+	public string GetIcons(string nomeBD)
+	{
+		var icones = new Filled();
+
+		var properties = icones.GetType().GetProperties();
+		foreach (var property in properties)
+		{
+			if(property.Name == nomeBD)
+			{
+                var objeto = new
+                {
+                    chave = property.GetValue(icones),
+                    valor = property.Name
+                };
+				return (string)objeto.chave;
+				
+			}
+		}
+
+		return "";
+	}
 }
+

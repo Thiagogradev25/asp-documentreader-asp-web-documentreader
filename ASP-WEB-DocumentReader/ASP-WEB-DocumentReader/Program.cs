@@ -14,6 +14,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<ILoginService, LoginService>()
                 .AddScoped<IAlertService, AlertService>()
+                .AddScoped<IMenuService, MenuService>()
                 .AddScoped<ILocalStorageService, LocalStorageService>();
 
 builder.Services.AddMudServices();
