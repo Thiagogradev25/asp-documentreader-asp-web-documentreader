@@ -12,9 +12,15 @@
 	}
 </MudAppBar>
 
-@code{
+	@code{
 	private bool _isLightMode = true;
-	private MudTheme _currentTheme = new MudTheme();
+	private MudTheme _currentTheme = new MudTheme()
+	{
+		Palette = new Palette()
+				{
+					AppbarBackground = "#3fd1d9"
+				}
+	};
 
 	[Parameter]
 	public EventCallback OnSidebarToggled { get; set; }
@@ -25,7 +31,13 @@
 	{
 		_isLightMode = !_isLightMode;
 
-		_currentTheme = !_isLightMode ? GenerateDarkTheme() : new MudTheme();
+		_currentTheme = !_isLightMode ? GenerateDarkTheme() : new MudTheme()
+		{
+			Palette = new Palette()
+			{
+				AppbarBackground = "#3fd1d9"
+			}
+		};
 
 		await OnThemeToggled.InvokeAsync(_currentTheme);
 	}

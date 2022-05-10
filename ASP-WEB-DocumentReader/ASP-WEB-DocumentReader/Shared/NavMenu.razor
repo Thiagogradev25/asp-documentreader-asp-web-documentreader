@@ -4,9 +4,10 @@
 
 <MudDrawer @bind-Open="SideBarOpen" Elevation="1">
 	<MudDrawerHeader>
-		@*<MudAvatar Color="Color.Primary" Size="Size.Medium" Image="assets/logo.png" />*@
-		<MudText Typo="Typo.h5" Color="Color.Default" Style="margin-top:10px; margin-left:15px;">@LoginService.User.nomeUsuario</MudText>
+		<MudAvatar Color="Color.Dark" Size="Size.Medium">@Iniciais()</MudAvatar>
+		<MudText Typo="Typo.inherit" Color="Color.Default" Style="margin-top:10px; margin-left:15px;">@LoginService.User.nomeUsuario</MudText>
 	</MudDrawerHeader>
+	<MudDivider />
 	@if(Menus.Count != 0)
 	{
 		<MudNavMenu>
@@ -38,6 +39,25 @@
 	{
 		var retorno = await MenuService.GetMenu();
 		Menus = retorno.ToList();
+	}
+
+	public string Iniciais()
+	{
+		string Nome = LoginService.User.nomeUsuario;
+
+		var lista = Nome.Split(" ").ToList();
+
+		var iniciais = "";
+
+		foreach(var item in lista)
+		{
+			if(iniciais.ToArray().Count() < 2)
+			{
+				iniciais += item.ToArray().First().ToString();
+			}
+		}
+
+		return iniciais;
 	}
 
 	public string GetIcons(string nomeBD)
