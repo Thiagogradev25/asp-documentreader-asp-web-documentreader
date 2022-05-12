@@ -1,9 +1,10 @@
 ﻿@page "/"
+@attribute [Authorize]
+@inject ILoginService LoginService
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="p-4">
+    <div class="container">
+        <h1>Hi @LoginService.User.nomeUsuario</h1>
+        <p>You're logged in with Blazor WebAssembly!!</p>
+    </div>
+</div>

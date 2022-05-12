@@ -1,0 +1,60 @@
+﻿@page "/Login"
+@using ASP_WEB_DocumentReader.Domain.Models
+@using ASP_WEB_DocumentReader.Helpers
+@inject ILoginService LoginService
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+
+<div class="container">
+    <div class="card">
+        <h4 class="card-header">Entrar</h4>
+        <div class="card-body">
+            <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="model.Email" id="email" class="form-control" placeholder="Email" />
+                    <label for="email">Email</label>
+                    <ValidationMessage  translate="yes" For="@(() => model.Email)" />
+                </div>
+                <div class="form-floating">
+                    <InputText @bind-Value="model.Password" id="senha" type="password" class="form-control" placeholder="Senha" />
+                    <label for="senha">Senha</label>
+                    <ValidationMessage translate="yes" For="@(() => model.Password)" />
+                </div>
+                <button disabled="@loading" class="btn btn-primary mt-3">
+                    @if (loading) 
+                    {
+                        <span class="spinner-border spinner-border-sm mr-1"></span>
+                    }
+                    Login
+                </button>
+                
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginRequest model = new LoginRequest();
+    private bool loading;
+
+    private async void OnValidSubmit()
+    {
+        // reset alerts on submit
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            await LoginService.Login(model);
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error("Login Inválido, Verifique o Usuário e Senha!");
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}
