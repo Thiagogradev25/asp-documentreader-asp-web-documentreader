@@ -37,7 +37,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		var retorno = await MenuService.GetMenu();
+		var retorno = await MenuService.GetMenu(LoginService.User.Perfil);
 		Menus = retorno.ToList();
 	}
 

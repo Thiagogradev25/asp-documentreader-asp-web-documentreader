@@ -12,15 +12,15 @@
         <div class="card-body">
             <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
                 <DataAnnotationsValidator />
-                <div class="form-group">
-                    <label>Email</label>
-                    <InputText @bind-Value="model.Email" class="form-control" />
-                    <ValidationMessage For="@(() => model.Email)" />
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="model.Email" id="email" class="form-control" placeholder="Email" />
+                    <label for="email">Email</label>
+                    <ValidationMessage  translate="yes" For="@(() => model.Email)" />
                 </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <InputText @bind-Value="model.Password" type="password" class="form-control" />
-                    <ValidationMessage For="@(() => model.Password)" />
+                <div class="form-floating">
+                    <InputText @bind-Value="model.Password" id="senha" type="password" class="form-control" placeholder="Senha" />
+                    <label for="senha">Senha</label>
+                    <ValidationMessage translate="yes" For="@(() => model.Password)" />
                 </div>
                 <button disabled="@loading" class="btn btn-primary mt-3">
                     @if (loading) 

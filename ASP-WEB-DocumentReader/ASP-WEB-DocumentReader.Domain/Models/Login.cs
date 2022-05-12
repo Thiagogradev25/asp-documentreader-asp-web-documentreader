@@ -23,8 +23,15 @@ namespace ASP_WEB_DocumentReader.Domain.Models
         public string nomeUsuario { get; set; }
         public string merchantId { get; set; }
         public string merchantKey { get; set; }
+        public Perfil Perfil { get; set; }
         public string guidRelatorio { get; set; }
         public string Token { get; set; }
+    }
+    public class Perfil
+    {
+        public int UsuarioCatalogoID { get; set; }
+        public string Descricao { get; set; }
+        public bool PerfilADM { get; set; }
     }
 
     public class UserResponse

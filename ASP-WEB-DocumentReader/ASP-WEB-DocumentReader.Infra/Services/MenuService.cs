@@ -1,5 +1,7 @@
 ﻿using ASP_API_DocumentReader.Domain.Models;
 using ASP_WEB_DocumentReader.Domain.Core.Interfaces;
+using ASP_WEB_DocumentReader.Domain.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +21,11 @@ namespace ASP_WEB_DocumentReader.Infra.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<MenuItem>> GetMenu()
+        public async Task<IEnumerable<MenuItem>> GetMenu(Perfil perfil)
         {
-            return await _httpClient.GetFromJsonAsync<IEnumerable<MenuItem>>("api/Menu");
+            var retornoJson = await _httpClient.PostAsJsonAsync<Perfil>("api/Menu", perfil);
+
+            return JsonConvert.DeserializeObject<IEnumerable<MenuItem>>(await retornoJson.Content.ReadAsStringAsync());
         }
     }
 }
