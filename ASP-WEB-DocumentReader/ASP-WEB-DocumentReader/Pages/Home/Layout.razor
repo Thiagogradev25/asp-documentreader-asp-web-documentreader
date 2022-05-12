@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+@layout MainLayout
+@inject ILoginService LoginService
+@inject NavigationManager NavigationManager
+
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        // redirect to home if already logged in
+        if (LoginService.User != null)
+        {
+            NavigationManager.NavigateTo("");
+        }
+    }
+}

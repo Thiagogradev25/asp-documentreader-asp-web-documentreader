@@ -1,39 +1,85 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">ASP-WEB-DocumentReader</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@using ASP_API_DocumentReader.Domain.Models
+@inject ILoginService LoginService
+@inject IMenuService MenuService
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<MudDrawer @bind-Open="SideBarOpen" Elevation="1">
+	<MudDrawerHeader>
+		<MudAvatar Color="Color.Dark" Size="Size.Medium">@Iniciais()</MudAvatar>
+		<MudText Typo="Typo.inherit" Color="Color.Default" Style="margin-top:10px; margin-left:15px;">@LoginService.User.nomeUsuario</MudText>
+	</MudDrawerHeader>
+	<MudDivider />
+	@if(Menus.Count != 0)
+	{
+		<MudNavMenu>
+		@foreach (var item in Menus.GroupBy(x => x.DescMenu))
+            {
+                <MudNavGroup Title="@item.First().DescMenu" Icon="@GetIcons(item.First().IconeMenu)" Expanded="false">
+                    @foreach (var subitem in item.Where(x => x.MenuId == item.First().MenuId))
+                    {
+                        <MudNavLink Href="@subitem.Titulo" Icon=@GetIcons(subitem.Icone)>@subitem.Titulo</MudNavLink>
+                    }
+				</MudNavGroup>
+            }
+		
+		</MudNavMenu>
+	}
+	<br />
+	<br />
+	<MudDivider />
+	<MudNavLink Href="/Logout" Icon="@Icons.Filled.Logout">LogOut</MudNavLink>
+</MudDrawer>
 
 @code {
-    private bool collapseNavMenu = true;
+	[Parameter]
+	public bool SideBarOpen { get; set; }
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+	List<MenuItem> Menus = new List<MenuItem>();
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		var retorno = await MenuService.GetMenu(LoginService.User.Perfil);
+		Menus = retorno.ToList();
+	}
+
+	public string Iniciais()
+	{
+		string Nome = LoginService.User.nomeUsuario;
+
+		var lista = Nome.Split(" ").ToList();
+
+		var iniciais = "";
+
+		foreach(var item in lista)
+		{
+			if(iniciais.ToArray().Count() < 2)
+			{
+				iniciais += item.ToArray().First().ToString();
+			}
+		}
+
+		return iniciais;
+	}
+
+	public string GetIcons(string nomeBD)
+	{
+		var icones = new Filled();
+
+		var properties = icones.GetType().GetProperties();
+		foreach (var property in properties)
+		{
+			if(property.Name == nomeBD)
+			{
+                var objeto = new
+                {
+                    chave = property.GetValue(icones),
+                    valor = property.Name
+                };
+				return (string)objeto.chave;
+				
+			}
+		}
+
+		return "";
+	}
 }
+
